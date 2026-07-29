@@ -1,44 +1,60 @@
-# my-garden
+# 🌱 My Garden
 
-This template should help get you started developing with Vue 3 in Vite.
+## Opis projekta
 
-## Recommended IDE Setup
+**My Garden** je web aplikacija razvijena u sklopu kolegija **Programsko inženjerstvo** na Fakultetu informatike u Puli.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Aplikacija omogućuje korisnicima organizaciju vlastitog vrta kroz vođenje evidencije biljaka, zapisivanje bilješki u vrtni dnevnik te spremanje recepata od vlastitog uroda.
 
-## Recommended Browser Setup
+---
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## Podaci o projektu
 
-## Customize configuration
+**Fakultet:** Fakultet informatike u Puli  
+**Kolegij:** Programsko inženjerstvo  
+**Mentor:** doc. dr. sc. Nikola Tanković
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## Project Setup
+## Tim
 
-```sh
-npm install
-```
+**Naziv tima:** 302/24 tim
 
-### Compile and Hot-Reload for Development
+**Član tima:**
 
-```sh
-npm run dev
-```
+- Sanja Olujević Stabile
 
-### Compile and Minify for Production
+---
 
-```sh
-npm run build
-```
+## Planirane funkcionalnosti
 
-### Lint with [ESLint](https://eslint.org/)
+- upravljanje biljkama
+- vrtni dnevnik
+- recepti
+- Firebase baza podataka
+- responzivan dizajn
 
-```sh
-npm run lint
-```
+---
+
+## Korištene tehnologije
+
+- Vue.js
+- Vue Router
+- Firebase Firestore
+
+---
+
+## Javni prototip
+
+Poveznica na javni prototip bit će dodana naknadno.
+
+---
+
+## Planirana zaduženja
+
+### Sanja Olujević Stabile
+
+- razvoj aplikacije
+- implementacija baze podataka
+- testiranje
+- izrada dokumentacije
