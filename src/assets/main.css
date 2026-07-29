@@ -1,0 +1,47 @@
+:root {
+
+    /* Backgrounds */
+
+    --background: #F8F4EC;
+    --surface: #FFFDF8;
+
+    /* Main colours */
+
+    --sage: #8CA58C;
+    --olive: #52634F;
+    --terracotta: #C98A6A;
+    --cream: #EFE5D5;
+
+    /* Text */
+
+    --text-dark: #3F473C;
+    --text-light: #6D756B;
+
+    /* Effects */
+
+    --radius: 20px;
+    --shadow: 0 12px 28px rgba(0, 0, 0, .08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    font-family: 'Nunito', sans-serif;
+    background: var(--background);
+    color: var(--text-dark);
+
+}
+
+h1,
+h2,
+h3,
+h4 {
+
+    font-family: 'Cormorant Garamond', serif;
+
+}
