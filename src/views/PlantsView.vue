@@ -5,6 +5,7 @@ const isModalOpen = ref(false)
 const errorMessage = ref('')
 const searchQuery = ref('')
 const showPlantSuggestions = ref(false)
+const editingPlantId = ref(null)
 
 const plants = ref([
   {
@@ -12,7 +13,7 @@ const plants = ref([
     name: 'Tomato',
     variety: 'Cherry Tomato',
     status: 'Growing',
-    plantedDate: '15 May 2026',
+    plantedDate: '2026-05-15',
     icon: '🍅',
   },
   {
@@ -20,7 +21,7 @@ const plants = ref([
     name: 'Basil',
     variety: 'Sweet Basil',
     status: 'Ready to harvest',
-    plantedDate: '20 May 2026',
+    plantedDate: '2026-05-20',
     icon: '🌿',
   },
   {
@@ -28,7 +29,7 @@ const plants = ref([
     name: 'Strawberry',
     variety: 'Garden Strawberry',
     status: 'Flowering',
-    plantedDate: '8 April 2026',
+    plantedDate: '2026-04-08',
     icon: '🍓',
   },
 ])
@@ -115,6 +116,7 @@ function closeModal() {
   isModalOpen.value = false
   errorMessage.value = ''
   showPlantSuggestions.value = false
+  editingPlantId.value = null
 
   newPlant.value = {
     name: '',
@@ -139,16 +141,58 @@ function savePlant() {
     return
   }
 
-  plants.value.push({
-    id: Date.now(),
-    name: selectedPlant.name,
-    variety: newPlant.value.variety || selectedPlant.category,
-    status: 'Growing',
-    plantedDate: newPlant.value.plantingDate,
-    icon: selectedPlant.icon,
-  })
+  if (editingPlantId.value) {
+    const plantToEdit = plants.value.find(
+      (plant) => plant.id === editingPlantId.value,
+    )
+
+    if (plantToEdit) {
+      plantToEdit.name = selectedPlant.name
+      plantToEdit.category = selectedPlant.category
+      plantToEdit.variety =
+        newPlant.value.variety || selectedPlant.category
+      plantToEdit.plantedDate = newPlant.value.plantingDate
+      plantToEdit.location = newPlant.value.location
+      plantToEdit.notes = newPlant.value.notes
+      plantToEdit.icon = selectedPlant.icon
+    }
+  } else {
+    plants.value.push({
+      id: Date.now(),
+      name: selectedPlant.name,
+      category: selectedPlant.category,
+      variety: newPlant.value.variety || selectedPlant.category,
+      status: 'Growing',
+      plantedDate: newPlant.value.plantingDate,
+      location: newPlant.value.location,
+      notes: newPlant.value.notes,
+      icon: selectedPlant.icon,
+    })
+  }
 
   closeModal()
+}
+
+function deletePlant(plantId) {
+  plants.value = plants.value.filter(
+    (plant) => plant.id !== plantId,
+  )
+}
+
+function editPlant(plant) {
+  editingPlantId.value = plant.id
+
+  newPlant.value = {
+    name: plant.name,
+    category: plant.category || '',
+    variety: plant.variety,
+    plantingDate: plant.plantedDate,
+    location: plant.location || '',
+    notes: plant.notes || '',
+  }
+
+  isModalOpen.value = true
+  errorMessage.value = ''
 }
 
 </script>
@@ -221,9 +265,23 @@ function savePlant() {
                 <p>{{ plant.variety }}</p>
               </div>
 
-              <button class="menu-button" aria-label="Plant options">
-                ···
+              <button
+                type="button"
+                class="delete-button"
+                @click="deletePlant(plant.id)"
+              >
+                Delete
               </button>
+
+              <button
+                type="button"
+                class="edit-button"
+                @click="editPlant(plant)"
+              >
+                Edit
+                
+              </button>
+
             </div>
 
             <span class="status">
@@ -234,6 +292,18 @@ function savePlant() {
               <span>Planted</span>
               <strong>{{ plant.plantedDate }}</strong>
             </div>
+
+            <div class="plant-location">
+              <span>Location</span>
+              <strong>{{ plant.location || 'Not specified' }}</strong>
+            </div>
+
+            <p
+              v-if="plant.notes"
+              class="plant-notes"
+            >
+              {{ plant.notes }}
+            </p>
 
             <button class="details-button">
               View details
@@ -255,7 +325,9 @@ function savePlant() {
     <div class="modal-header">
       <div>
         <p class="eyebrow">New garden entry</p>
-        <h2>Add New Plant</h2>
+        <h2>
+        {{ editingPlantId ? 'Edit Plant' : 'Add New Plant' }}
+        </h2>
       </div>
 
       <button
@@ -380,7 +452,7 @@ function savePlant() {
         </button>
 
         <button type="submit" class="save-button">
-          Save plant
+          {{ editingPlantId ? 'Update plant' : 'Save plant' }}
         </button>
       </div>
     </form>
@@ -943,4 +1015,64 @@ function savePlant() {
   color: #8a8f87;
   text-align: center;
 }
+
+.delete-button {
+  padding: 7px 11px;
+  border: none;
+  border-radius: 999px;
+  background: #f7e5df;
+  color: #9c5847;
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background: #efd3ca;
+}
+
+.edit-button {
+  padding: 7px 11px;
+  border: none;
+  border-radius: 999px;
+  background: #edf2e8;
+  color: var(--olive);
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background: #dde7d7;
+}
+
+.plant-location {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 0.84rem;
+}
+
+.plant-location span {
+  color: #999e96;
+}
+
+.plant-location strong {
+  color: var(--olive);
+  font-weight: 700;
+}
+
+.plant-notes {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #f5f2eb;
+  color: #6f756d;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
 </style>
