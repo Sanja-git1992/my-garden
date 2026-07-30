@@ -115,7 +115,7 @@
       </div>
 
       <div class="quick-access-grid">
-        <article class="access-card plants-card">
+        <RouterLink to="/plants" class="access-card plants-card">
           <div class="card-top">
             <span class="card-number">01</span>
             <span class="card-arrow">↗</span>
@@ -129,8 +129,10 @@
             Add plants, save useful information and follow their progress.
           </p>
 
-          <button class="text-button">View plants</button>
-        </article>
+          <span class="text-button">
+            View plants
+          </span>
+        </RouterLink>
 
         <article class="access-card journal-card">
           <div class="card-top">
