@@ -1,38 +1,14 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { usePlantStore } from '@/stores/plantStore.js'
 
+const plantStore = usePlantStore()
 const isModalOpen = ref(false)
 const errorMessage = ref('')
 const searchQuery = ref('')
 const showPlantSuggestions = ref(false)
 const editingPlantId = ref(null)
 
-const plants = ref([
-  {
-    id: 1,
-    name: 'Tomato',
-    variety: 'Cherry Tomato',
-    status: 'Growing',
-    plantedDate: '2026-05-15',
-    icon: '🍅',
-  },
-  {
-    id: 2,
-    name: 'Basil',
-    variety: 'Sweet Basil',
-    status: 'Ready to harvest',
-    plantedDate: '2026-05-20',
-    icon: '🌿',
-  },
-  {
-    id: 3,
-    name: 'Strawberry',
-    variety: 'Garden Strawberry',
-    status: 'Flowering',
-    plantedDate: '2026-04-08',
-    icon: '🍓',
-  },
-])
 
 const newPlant = ref({
   name: '',
@@ -95,10 +71,10 @@ const filteredPlants = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
 
   if (!query) {
-    return plants.value
+    return plantStore.plants
   }
 
-  return plants.value.filter((plant) => {
+  return plantStore.plants.filter((plant) => {
     return (
       plant.name.toLowerCase().includes(query) ||
       plant.variety.toLowerCase().includes(query) ||
@@ -142,26 +118,22 @@ function savePlant() {
   }
 
   if (editingPlantId.value) {
-    const plantToEdit = plants.value.find(
-      (plant) => plant.id === editingPlantId.value,
-    )
-
-    if (plantToEdit) {
-      plantToEdit.name = selectedPlant.name
-      plantToEdit.category = selectedPlant.category
-      plantToEdit.variety =
-        newPlant.value.variety || selectedPlant.category
-      plantToEdit.plantedDate = newPlant.value.plantingDate
-      plantToEdit.location = newPlant.value.location
-      plantToEdit.notes = newPlant.value.notes
-      plantToEdit.icon = selectedPlant.icon
-    }
-  } else {
-    plants.value.push({
-      id: Date.now(),
+    plantStore.updatePlant(editingPlantId.value, {
       name: selectedPlant.name,
       category: selectedPlant.category,
-      variety: newPlant.value.variety || selectedPlant.category,
+      variety:
+        newPlant.value.variety || selectedPlant.category,
+      plantedDate: newPlant.value.plantingDate,
+      location: newPlant.value.location,
+      notes: newPlant.value.notes,
+      icon: selectedPlant.icon,
+    })
+  } else {
+    plantStore.addPlant({
+      name: selectedPlant.name,
+      category: selectedPlant.category,
+      variety:
+        newPlant.value.variety || selectedPlant.category,
       status: 'Growing',
       plantedDate: newPlant.value.plantingDate,
       location: newPlant.value.location,
@@ -174,9 +146,7 @@ function savePlant() {
 }
 
 function deletePlant(plantId) {
-  plants.value = plants.value.filter(
-    (plant) => plant.id !== plantId,
-  )
+  plantStore.deletePlant(plantId)
 }
 
 function editPlant(plant) {
@@ -216,7 +186,7 @@ function editPlant(plant) {
 
     <section class="plants-summary">
       <article class="summary-card">
-        <span class="summary-number">{{ plants.length }}</span>
+        <span class="summary-number">{{ plantStore.plants.length }}</span>
         <span class="summary-label">Plants</span>
       </article>
 
