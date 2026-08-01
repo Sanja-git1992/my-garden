@@ -19,27 +19,6 @@ const newPlant = ref({
   notes: '',
 })
 
-const plantTypes = [
-  { name: 'Tomato', category: 'Vegetable', icon: '🍅' },
-  { name: 'Cucumber', category: 'Vegetable', icon: '🥒' },
-  { name: 'Zucchini', category: 'Vegetable', icon: '🥒' },
-  { name: 'Carrot', category: 'Vegetable', icon: '🥕' },
-  { name: 'Potato', category: 'Vegetable', icon: '🥔' },
-  { name: 'Pepper', category: 'Vegetable', icon: '🌶️' },
-  { name: 'Lettuce', category: 'Vegetable', icon: '🥬' },
-  { name: 'Onion', category: 'Vegetable', icon: '🧅' },
-  { name: 'Garlic', category: 'Vegetable', icon: '🧄' },
-  { name: 'Pumpkin', category: 'Vegetable', icon: '🎃' },
-  { name: 'Strawberry', category: 'Fruit', icon: '🍓' },
-  { name: 'Blueberry', category: 'Fruit', icon: '🫐' },
-  { name: 'Apple', category: 'Fruit', icon: '🍎' },
-  { name: 'Pear', category: 'Fruit', icon: '🍐' },
-  { name: 'Basil', category: 'Herb', icon: '🌿' },
-  { name: 'Parsley', category: 'Herb', icon: '🌿' },
-  { name: 'Rose', category: 'Flower', icon: '🌹' },
-  { name: 'Sunflower', category: 'Flower', icon: '🌻' },
-  { name: 'Other', category: 'Other', icon: '🌱' },
-]
 
 const filteredPlantTypes = computed(() => {
   const query = newPlant.value.name.trim().toLowerCase()
@@ -48,7 +27,7 @@ const filteredPlantTypes = computed(() => {
     return []
   }
 
-  return plantTypes.filter((plant) =>
+  return plantStore.plantTypes.filter((plant) =>
     plant.name.toLowerCase().startsWith(query),
   )
 })
@@ -105,7 +84,7 @@ function closeModal() {
 }
 
 function savePlant() {
-  const selectedPlant = plantTypes.find(
+  const selectedPlant = plantStore.plantTypes.find(
     (plant) =>
       plant.name.toLowerCase() ===
       newPlant.value.name.trim().toLowerCase(),
