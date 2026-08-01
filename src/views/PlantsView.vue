@@ -275,10 +275,13 @@ function editPlant(plant) {
               {{ plant.notes }}
             </p>
 
-            <button class="details-button">
+            <RouterLink
+              :to="{ name: 'plant-details', params: { id: plant.id } }"
+              class="details-button"
+            >
               View details
               <span>→</span>
-            </button>
+            </RouterLink>
           </div>
         </article>
       </div>
@@ -704,6 +707,7 @@ function editPlant(plant) {
   font-size: 0.88rem;
   font-weight: 800;
   cursor: pointer;
+  text-decoration: none;
 }
 
 @media (max-width: 900px) {
