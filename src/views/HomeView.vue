@@ -134,22 +134,27 @@
           </span>
         </RouterLink>
 
-        <article class="access-card journal-card">
-          <div class="card-top">
-            <span class="card-number">02</span>
-            <span class="card-arrow">↗</span>
-          </div>
+        <RouterLink
+  to="/journal"
+  class="access-card journal-card"
+>
+  <div class="card-top">
+    <span class="card-number">02</span>
+    <span class="card-arrow">↗</span>
+  </div>
 
-          <div class="card-icon">✎</div>
+  <div class="card-icon">✎</div>
 
-          <h3>Garden Journal</h3>
+  <h3>Garden Journal</h3>
 
-          <p>
-            Record observations, memories and important seasonal moments.
-          </p>
+  <p>
+    Record observations, memories and important seasonal moments.
+  </p>
 
-          <button class="text-button">Open journal</button>
-        </article>
+  <span class="text-button">
+    Open journal
+  </span>
+</RouterLink>
 
         <article class="access-card recipes-card">
           <div class="card-top">
@@ -573,6 +578,8 @@ button {
   overflow: hidden;
   border: 1px solid rgba(204, 190, 170, 0.65);
   border-radius: 28px;
+  text-decoration: none;
+  color: inherit;
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease;
