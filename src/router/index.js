@@ -4,6 +4,8 @@ import PlantsView from '../views/PlantsView.vue'
 import PlantDetailsView from '../views/PlantDetailsView.vue'
 import EncyclopediaView from '../views/EncyclopediaView.vue'
 import JournalView from '../views/JournalView.vue'
+import RecipesView from '../views/RecipesView.vue'
+import RecipeDetailsView from '../views/RecipeDetailsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +34,16 @@ const router = createRouter({
       path: '/journal',
       name: 'journal',
       component: JournalView,
+    },
+    {
+      path: '/recipes',
+      name: 'recipes',
+      component: RecipesView,
+    },
+    {
+      path: '/recipes/:id',
+      name: 'recipe-details',
+      component: RecipeDetailsView,
     },
   ],
 })

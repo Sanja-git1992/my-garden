@@ -156,7 +156,10 @@
   </span>
 </RouterLink>
 
-        <article class="access-card recipes-card">
+        <RouterLink
+          to="/recipes"
+          class="access-card recipes-card"
+>
           <div class="card-top">
             <span class="card-number">03</span>
             <span class="card-arrow">↗</span>
@@ -170,8 +173,11 @@
             Keep your favourite recipes inspired by home-grown ingredients.
           </p>
 
-          <button class="text-button">Browse recipes</button>
-        </article>
+          <span class="text-button">
+            Browse recipes
+          </span>
+        </RouterLink>
+        
       </div>
     </section>
   </main>
