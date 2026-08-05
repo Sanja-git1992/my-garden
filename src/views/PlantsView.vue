@@ -1,8 +1,25 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { usePlantStore } from '@/stores/plantStore.js'
 
 const plantStore = usePlantStore()
+
+const growingPlantsCount = computed(() => {
+  return plantStore.plants.filter(
+    (plant) => plant.status === 'Growing',
+  ).length
+})
+
+const readyToHarvestCount = computed(() => {
+  return plantStore.plants.filter(
+    (plant) => plant.status === 'Ready to harvest',
+  ).length
+})
+
+onMounted(() => {
+  plantStore.loadPlants()
+})
+
 const isModalOpen = ref(false)
 const errorMessage = ref('')
 const searchQuery = ref('')
@@ -83,7 +100,7 @@ function closeModal() {
   }
 }
 
-function savePlant() {
+async function savePlant() {
   const selectedPlant = plantStore.plantTypes.find(
     (plant) =>
       plant.name.toLowerCase() ===
@@ -97,18 +114,27 @@ function savePlant() {
   }
 
   if (editingPlantId.value) {
-    plantStore.updatePlant(editingPlantId.value, {
+  const wasUpdated = await plantStore.updatePlant(
+    editingPlantId.value,
+    {
       name: selectedPlant.name,
       category: selectedPlant.category,
       variety:
         newPlant.value.variety || selectedPlant.category,
+      status: 'Growing',
       plantedDate: newPlant.value.plantingDate,
       location: newPlant.value.location,
       notes: newPlant.value.notes,
       icon: selectedPlant.icon,
-    })
-  } else {
-    plantStore.addPlant({
+    },
+  )
+
+  if (!wasUpdated) {
+    errorMessage.value = plantStore.errorMessage
+    return
+  }
+} else {
+    const wasAdded = await plantStore.addPlant({
       name: selectedPlant.name,
       category: selectedPlant.category,
       variety:
@@ -119,13 +145,30 @@ function savePlant() {
       notes: newPlant.value.notes,
       icon: selectedPlant.icon,
     })
+
+    if (!wasAdded) {
+      errorMessage.value = plantStore.errorMessage
+      return
+    }
   }
 
   closeModal()
 }
 
-function deletePlant(plantId) {
-  plantStore.deletePlant(plantId)
+async function deletePlant(id) {
+  const shouldDelete = window.confirm(
+    'Are you sure you want to delete this plant?',
+  )
+
+  if (!shouldDelete) {
+    return
+  }
+
+  const wasDeleted = await plantStore.deletePlant(id)
+
+  if (!wasDeleted) {
+    errorMessage.value = plantStore.errorMessage
+  }
 }
 
 function editPlant(plant) {
@@ -165,17 +208,26 @@ function editPlant(plant) {
 
     <section class="plants-summary">
       <article class="summary-card">
-        <span class="summary-number">{{ plantStore.plants.length }}</span>
+        <span class="summary-number">
+          {{ plantStore.plants.length }}
+        </span>
+
         <span class="summary-label">Plants</span>
       </article>
 
       <article class="summary-card">
-        <span class="summary-number">2</span>
+        <span class="summary-number">
+          {{ growingPlantsCount }}
+        </span>
+
         <span class="summary-label">Growing</span>
       </article>
 
       <article class="summary-card">
-        <span class="summary-number">1</span>
+        <span class="summary-number">
+          {{ readyToHarvestCount }}
+        </span>
+
         <span class="summary-label">Ready to harvest</span>
       </article>
     </section>

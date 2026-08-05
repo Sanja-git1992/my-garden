@@ -1,42 +1,21 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import {
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    getDocs,
+    updateDoc,
+} from 'firebase/firestore'
+import { auth, db } from '@/firebase.js'
 
 export const usePlantStore = defineStore('plantStore', () => {
-    const plants = ref([
-        {
-            id: 1,
-            name: 'Tomato',
-            category: 'Vegetable',
-            variety: 'Cherry Tomato',
-            status: 'Growing',
-            plantedDate: '2026-05-15',
-            location: '',
-            notes: '',
-            icon: '🍅',
-        },
-        {
-            id: 2,
-            name: 'Basil',
-            category: 'Herb',
-            variety: 'Sweet Basil',
-            status: 'Ready to harvest',
-            plantedDate: '2026-05-20',
-            location: '',
-            notes: '',
-            icon: '🌿',
-        },
-        {
-            id: 3,
-            name: 'Strawberry',
-            category: 'Fruit',
-            variety: 'Garden Strawberry',
-            status: 'Flowering',
-            plantedDate: '2026-04-08',
-            location: '',
-            notes: '',
-            icon: '🍓',
-        },
-    ])
+
+    const plants = ref([])
+
+    const isLoading = ref(false)
+    const errorMessage = ref('')
 
     const plantTypes = [
         {
@@ -174,35 +153,192 @@ export const usePlantStore = defineStore('plantStore', () => {
         },
     ]
 
-    function addPlant(plant) {
-        plants.value.push({
-            id: Date.now(),
-            ...plant,
-        })
-    }
+    async function loadPlants() {
+        errorMessage.value = ''
 
-    function updatePlant(plantId, updatedPlant) {
-        const plantIndex = plants.value.findIndex(
-            (plant) => plant.id === plantId,
-        )
+        const currentUser = auth.currentUser
 
-        if (plantIndex !== -1) {
-            plants.value[plantIndex] = {
-                ...plants.value[plantIndex],
-                ...updatedPlant,
+        if (!currentUser) {
+            errorMessage.value =
+                'Plants cannot be loaded because the user is not logged in.'
+            return
+        }
+
+        try {
+            isLoading.value = true
+
+            const plantsCollection = collection(
+                db,
+                'users',
+                currentUser.uid,
+                'plants',
+            )
+
+            const querySnapshot = await getDocs(plantsCollection)
+
+            if (!querySnapshot.empty) {
+                plants.value = querySnapshot.docs.map((plantDocument) => {
+                    return {
+                        id: plantDocument.id,
+                        ...plantDocument.data(),
+                    }
+                })
             }
+        } catch (error) {
+            console.error('Error loading plants:', error)
+
+            errorMessage.value =
+                'Plants could not be loaded from the database.'
+        } finally {
+            isLoading.value = false
         }
     }
 
-    function deletePlant(plantId) {
-        plants.value = plants.value.filter(
-            (plant) => plant.id !== plantId,
-        )
+    async function addPlant(plant) {
+        errorMessage.value = ''
+
+        const currentUser = auth.currentUser
+
+        if (!currentUser) {
+            errorMessage.value =
+                'Plant cannot be added because the user is not logged in.'
+
+            return false
+        }
+
+        try {
+            isLoading.value = true
+
+            const plantsCollection = collection(
+                db,
+                'users',
+                currentUser.uid,
+                'plants',
+            )
+
+            const plantDocument = await addDoc(
+                plantsCollection,
+                plant,
+            )
+
+            plants.value.push({
+                id: plantDocument.id,
+                ...plant,
+            })
+
+            return true
+        } catch (error) {
+            console.error('Error adding plant:', error)
+
+            errorMessage.value =
+                'The plant could not be saved to the database.'
+
+            return false
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    async function updatePlant(plantId, updatedPlant) {
+        errorMessage.value = ''
+
+        const currentUser = auth.currentUser
+
+        if (!currentUser) {
+            errorMessage.value =
+                'Plant cannot be updated because the user is not logged in.'
+
+            return false
+        }
+
+        try {
+            isLoading.value = true
+
+            const plantDocument = doc(
+                db,
+                'users',
+                currentUser.uid,
+                'plants',
+                plantId,
+            )
+
+            await updateDoc(
+                plantDocument,
+                updatedPlant,
+            )
+
+            const plantIndex = plants.value.findIndex(
+                (plant) => plant.id === plantId,
+            )
+
+            if (plantIndex !== -1) {
+                plants.value[plantIndex] = {
+                    ...plants.value[plantIndex],
+                    ...updatedPlant,
+                }
+            }
+
+            return true
+        } catch (error) {
+            console.error('Error updating plant:', error)
+
+            errorMessage.value =
+                'The plant could not be updated in the database.'
+
+            return false
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    async function deletePlant(plantId) {
+        errorMessage.value = ''
+
+        const currentUser = auth.currentUser
+
+        if (!currentUser) {
+            errorMessage.value =
+                'Plant cannot be deleted because the user is not logged in.'
+
+            return false
+        }
+
+        try {
+            isLoading.value = true
+
+            const plantDocument = doc(
+                db,
+                'users',
+                currentUser.uid,
+                'plants',
+                plantId,
+            )
+
+            await deleteDoc(plantDocument)
+
+            plants.value = plants.value.filter(
+                (plant) => plant.id !== plantId,
+            )
+
+            return true
+        } catch (error) {
+            console.error('Error deleting plant:', error)
+
+            errorMessage.value =
+                'The plant could not be deleted.'
+
+            return false
+        } finally {
+            isLoading.value = false
+        }
     }
 
     return {
         plants,
         plantTypes,
+        isLoading,
+        errorMessage,
+        loadPlants,
         addPlant,
         updatePlant,
         deletePlant,
