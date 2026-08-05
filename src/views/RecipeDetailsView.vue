@@ -1,14 +1,18 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRecipeStore } from '@/stores/recipeStore.js'
 
 const route = useRoute()
 const recipeStore = useRecipeStore()
 
+onMounted(() => {
+  recipeStore.loadRecipes()
+})
+
 const recipe = computed(() =>
   recipeStore.recipes.find(
-    (recipe) => recipe.id === Number(route.params.id),
+    (recipe) => String(recipe.id) === String(route.params.id),
   ),
 )
 </script>

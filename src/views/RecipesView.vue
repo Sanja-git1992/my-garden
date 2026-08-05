@@ -1,8 +1,12 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRecipeStore } from '@/stores/recipeStore.js'
 
 const recipeStore = useRecipeStore()
+
+onMounted(() => {
+  recipeStore.loadRecipes()
+})
 
 const searchQuery = ref('')
 const selectedCategory = ref('All')
@@ -85,7 +89,7 @@ function closeModal() {
   }
 }
 
-function saveRecipe() {
+async function saveRecipe() {
   if (
     !newRecipe.value.title.trim() ||
     !newRecipe.value.category ||
@@ -111,13 +115,23 @@ function saveRecipe() {
   }
 
   if (editingRecipeId.value) {
-    recipeStore.updateRecipe(
-      editingRecipeId.value,
-      recipeData,
-    )
-  } else {
-    recipeStore.addRecipe(recipeData)
+  const wasUpdated = await recipeStore.updateRecipe(
+    editingRecipeId.value,
+    recipeData,
+  )
+
+  if (!wasUpdated) {
+    errorMessage.value = recipeStore.errorMessage
+    return
   }
+} else {
+  const wasAdded = await recipeStore.addRecipe(recipeData)
+
+  if (!wasAdded) {
+    errorMessage.value = recipeStore.errorMessage
+    return
+  }
+}
 
   closeModal()
 }
@@ -137,13 +151,21 @@ function editRecipe(recipe) {
   errorMessage.value = ''
 }
 
-function deleteRecipe(recipeId) {
+async function deleteRecipe(id) {
   const shouldDelete = window.confirm(
     'Are you sure you want to delete this recipe?',
   )
 
-  if (shouldDelete) {
-    recipeStore.deleteRecipe(recipeId)
+  if (!shouldDelete) {
+    return
+  }
+
+  const wasDeleted =
+    await recipeStore.deleteRecipe(id)
+
+  if (!wasDeleted) {
+    errorMessage.value =
+      recipeStore.errorMessage
   }
 }
 
