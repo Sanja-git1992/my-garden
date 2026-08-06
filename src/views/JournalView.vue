@@ -1,8 +1,12 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useJournalStore } from '@/stores/journalStore.js'
 
 const journalStore = useJournalStore()
+
+onMounted(() => {
+  journalStore.loadEntries()
+})
 
 const isModalOpen = ref(false)
 const editingEntryId = ref(null)
@@ -31,7 +35,7 @@ function closeModal() {
   }
 }
 
-function saveEntry() {
+async function saveEntry() {
   if (
     !newEntry.value.title.trim() ||
     !newEntry.value.date ||
@@ -43,17 +47,30 @@ function saveEntry() {
   }
 
   if (editingEntryId.value) {
-    journalStore.updateEntry(editingEntryId.value, {
-      title: newEntry.value.title,
+  const wasUpdated = await journalStore.updateEntry(
+    editingEntryId.value,
+    {
+      title: newEntry.value.title.trim(),
       date: newEntry.value.date,
-      text: newEntry.value.text,
-    })
-  } else {
-    journalStore.addEntry({
-      title: newEntry.value.title,
+      text: newEntry.value.text.trim(),
+    },
+  )
+
+  if (!wasUpdated) {
+    errorMessage.value = journalStore.errorMessage
+    return
+  }
+} else {
+    const wasAdded = await journalStore.addEntry({
+      title: newEntry.value.title.trim(),
       date: newEntry.value.date,
-      text: newEntry.value.text,
+      text: newEntry.value.text.trim(),
     })
+
+    if (!wasAdded) {
+      errorMessage.value = journalStore.errorMessage
+      return
+    }
   }
 
   closeModal()
@@ -72,8 +89,22 @@ function editEntry(entry) {
   errorMessage.value = ''
 }
 
-function deleteEntry(entryId) {
-  journalStore.deleteEntry(entryId)
+async function deleteEntry(id) {
+  const shouldDelete = window.confirm(
+    'Are you sure you want to delete this journal entry?',
+  )
+
+  if (!shouldDelete) {
+    return
+  }
+
+  const wasDeleted =
+    await journalStore.deleteEntry(id)
+
+  if (!wasDeleted) {
+    errorMessage.value =
+      journalStore.errorMessage
+  }
 }
 
 function formatDate(date) {
