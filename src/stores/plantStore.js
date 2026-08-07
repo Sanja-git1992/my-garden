@@ -176,14 +176,12 @@ export const usePlantStore = defineStore('plantStore', () => {
 
             const querySnapshot = await getDocs(plantsCollection)
 
-            if (!querySnapshot.empty) {
-                plants.value = querySnapshot.docs.map((plantDocument) => {
-                    return {
-                        id: plantDocument.id,
-                        ...plantDocument.data(),
-                    }
-                })
-            }
+            plants.value = querySnapshot.docs.map((plantDocument) => {
+                return {
+                    id: plantDocument.id,
+                    ...plantDocument.data(),
+                }
+            })
         } catch (error) {
             console.error('Error loading plants:', error)
 

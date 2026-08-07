@@ -1,14 +1,18 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { usePlantStore } from '@/stores/plantStore'
 
 const route = useRoute()
 const plantStore = usePlantStore()
 
+onMounted(() => {
+  plantStore.loadPlants()
+})
+
 const plant = computed(() =>
   plantStore.plants.find(
-    (plant) => plant.id === Number(route.params.id),
+    (plant) => String(plant.id) === String(route.params.id),
   ),
 )
 

@@ -19,45 +19,22 @@
           </p>
 
           <div class="hero-actions">
-            <button class="primary-button">
+            <RouterLink
+              to="/plants"
+              class="primary-button"
+            >
               Explore your garden
               <span aria-hidden="true">→</span>
-            </button>
+            </RouterLink>
 
-            <button class="secondary-button">
+            <RouterLink
+              to="/journal"
+              class="secondary-button"
+            >
               Open journal
-            </button>
+            </RouterLink>
           </div>
-
-          <div class="garden-summary">
-            <div class="summary-item">
-              <span class="summary-number">01</span>
-
-              <div>
-                <strong>Plan</strong>
-                <p>Organize your plants and garden activities.</p>
-              </div>
-            </div>
-
-            <div class="summary-item">
-              <span class="summary-number">02</span>
-
-              <div>
-                <strong>Observe</strong>
-                <p>Follow growth and record seasonal changes.</p>
-              </div>
-            </div>
-
-            <div class="summary-item">
-              <span class="summary-number">03</span>
-
-              <div>
-                <strong>Enjoy</strong>
-                <p>Save recipes inspired by your harvest.</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        </div> 
 
         <div class="hero-visual">
           <div class="photo-decoration photo-decoration-top"></div>
@@ -86,15 +63,6 @@
             <div>
               <strong>Perfect garden day</strong>
               <p>Take a moment to check your plants.</p>
-            </div>
-          </div>
-
-          <div class="floating-card floating-card-growth">
-            <span class="small-leaf">●</span>
-
-            <div>
-              <strong>Growing beautifully</strong>
-              <p>Your garden story continues.</p>
             </div>
           </div>
         </div>
@@ -135,33 +103,55 @@
         </RouterLink>
 
         <RouterLink
-  to="/journal"
-  class="access-card journal-card"
->
-  <div class="card-top">
-    <span class="card-number">02</span>
-    <span class="card-arrow">↗</span>
-  </div>
+          to="/encyclopedia"
+          class="access-card encyclopedia-card"
+        >
+          <div class="card-top">
+            <span class="card-number">02</span>
+            <span class="card-arrow">↗</span>
+          </div>
 
-  <div class="card-icon">✎</div>
+          <div class="card-icon">📖</div>
 
-  <h3>Garden Journal</h3>
+          <h3>Plant Encyclopedia</h3>
 
-  <p>
-    Record observations, memories and important seasonal moments.
-  </p>
+          <p>
+              Discover useful information about plants and their basic growing needs.
+          </p>
 
-  <span class="text-button">
-    Open journal
-  </span>
-</RouterLink>
+          <span class="text-button">
+            Explore plants
+          </span>
+        </RouterLink>
+
+        <RouterLink
+          to="/journal"
+          class="access-card journal-card"
+        >
+          <div class="card-top">
+            <span class="card-number">03</span>
+            <span class="card-arrow">↗</span>
+          </div>
+
+          <div class="card-icon">✎</div>
+
+            <h3>Garden Journal</h3>
+
+            <p>
+              Record observations, memories and important seasonal moments.
+            </p>
+
+            <span class="text-button">
+              Open journal
+            </span>
+        </RouterLink>
 
         <RouterLink
           to="/recipes"
           class="access-card recipes-card"
 >
           <div class="card-top">
-            <span class="card-number">03</span>
+            <span class="card-number">04</span>
             <span class="card-arrow">↗</span>
           </div>
 
@@ -340,41 +330,6 @@ button {
   background-color: var(--surface);
 }
 
-.garden-summary {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 25px;
-  padding-top: 28px;
-  border-top: 1px solid rgba(82, 99, 79, 0.14);
-}
-
-.summary-item {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-.summary-number {
-  padding-top: 2px;
-  color: var(--terracotta);
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-}
-
-.summary-item strong {
-  display: block;
-  margin-bottom: 5px;
-  color: var(--olive);
-  font-size: 0.85rem;
-}
-
-.summary-item p {
-  color: var(--text-light);
-  font-size: 0.72rem;
-  line-height: 1.5;
-}
-
 /* HERO IMAGE */
 
 .hero-visual {
@@ -488,14 +443,6 @@ button {
   transform: rotate(-2deg);
 }
 
-.floating-card-growth {
-  top: 92px;
-  right: -60px;
-  width: 210px;
-  background-color: rgba(228, 237, 220, 0.94);
-  transform: rotate(2deg);
-}
-
 .floating-icon {
   display: grid;
   place-items: center;
@@ -505,17 +452,6 @@ button {
   border-radius: 50%;
   color: #c58a51;
   font-size: 1.25rem;
-}
-
-.small-leaf {
-  display: grid;
-  place-items: center;
-  flex: 0 0 34px;
-  height: 34px;
-  background-color: var(--sage);
-  border-radius: 50%;
-  color: var(--surface);
-  font-size: 0.75rem;
 }
 
 .floating-card strong {
@@ -573,7 +509,7 @@ button {
 
 .quick-access-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
 }
 
@@ -598,6 +534,10 @@ button {
 
 .plants-card {
   background-color: #dde7d7;
+}
+
+.encyclopedia-card {
+  background-color: #e2e7dc;
 }
 
 .journal-card {
@@ -687,16 +627,9 @@ button {
   .hero-visual {
     justify-self: center;
   }
-
-  .floating-card-growth {
-    right: -30px;
-  }
 }
 
 @media (max-width: 850px) {
-  .garden-summary {
-    grid-template-columns: 1fr;
-  }
 
   .section-heading {
     grid-template-columns: 1fr;
@@ -747,10 +680,6 @@ button {
     transform: none;
   }
 
-  .floating-card-growth {
-    display: none;
-  }
-
   .quick-access-section {
     width: calc(100% - 32px);
     margin-bottom: 65px;
@@ -771,4 +700,13 @@ button {
     text-align: left;
   }
 }
+
+.primary-button,
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 </style>

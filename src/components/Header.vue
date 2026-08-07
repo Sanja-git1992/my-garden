@@ -19,6 +19,7 @@ async function logoutUser() {
   }
 }
 </script>
+
 <template>
   <header class="header">
     <div class="header-container">
@@ -30,52 +31,49 @@ async function logoutUser() {
       </RouterLink>
 
       <nav class="navigation">
-  <RouterLink to="/">
-    Home
-  </RouterLink>
+        <RouterLink to="/">
+          Home
+        </RouterLink>
 
-  <template v-if="authStore.isLoggedIn">
-    <RouterLink to="/plants">
-      My Plants
-    </RouterLink>
+        <template v-if="authStore.isLoggedIn">
+          <RouterLink to="/plants">
+            My Plants
+          </RouterLink>
 
-    <RouterLink to="/encyclopedia">
-      Encyclopedia
-    </RouterLink>
+          <RouterLink to="/encyclopedia">
+            Encyclopedia
+          </RouterLink>
 
-    <RouterLink to="/recipes">
-      Recipes
-    </RouterLink>
+          <RouterLink to="/recipes">
+            Recipes
+          </RouterLink>
 
-    <RouterLink to="/journal">
-      Journal
-    </RouterLink>
+          <RouterLink to="/journal">
+            Journal
+          </RouterLink>
 
-    <button
-      type="button"
-      class="logout-button"
-      @click="logoutUser"
-    >
-      Logout
-    </button>
-  </template>
+          <button
+            type="button"
+            class="logout-button"
+            @click="logoutUser"
+          >
+            Logout
+          </button>
+        </template>
 
-  <template v-else>
-    <RouterLink to="/login">
-      Login
-    </RouterLink>
+        <template v-else>
+          <RouterLink to="/login">
+            Login
+          </RouterLink>
 
-    <RouterLink to="/register">
-      Register
-    </RouterLink>
-  </template>
-</nav>
+          <RouterLink to="/register">
+            Register
+          </RouterLink>
+        </template>
+      </nav>
     </div>
   </header>
 </template>
-
-<script setup>
-</script>
 
 <style scoped>
 .header {
